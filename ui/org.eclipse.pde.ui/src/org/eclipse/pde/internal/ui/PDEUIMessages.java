@@ -3021,6 +3021,12 @@ public class PDEUIMessages extends NLS {
 
 	public static String OrganizeManifestsWizardPage_unresolvedDependencies;
 
+	public static String OrganizeManifestsWizardPage_addMissingVersions;
+
+	public static String OrganizeManifestsWizardPage_addFixedVersions;
+
+	public static String OrganizeManifestsWizardPage_addBundledVersions;
+
 	public static String OrganizeManifestsWizardPage_remove;
 
 	public static String OrganizeManifestsWizardPage_markOptional;
@@ -3440,6 +3446,11 @@ public class PDEUIMessages extends NLS {
 	public static String ProjectUpdateChange_convert_build_to_bnd;
 	public static String ProjectUpdateChange_set_pde_preference;
 
+<<<<<<< HEAD
 	public static String AddMatchingVersion_RequireBundle;
+=======
+
+}
+>>>>>>> 847fc0c77b (Added a checkbox button, two radio buttons, and text to Organize Manifests Wizard for the adding missing export feature)
 
 }

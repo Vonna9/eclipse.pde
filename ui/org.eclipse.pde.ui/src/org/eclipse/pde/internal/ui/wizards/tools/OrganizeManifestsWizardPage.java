@@ -45,6 +45,9 @@ import org.eclipse.ui.PlatformUI;
 
 public class OrganizeManifestsWizardPage extends UserInputWizardPage implements ILaunchingPreferenceConstants, IOrganizeManifestsSettings {
 
+	private Button fAddFixedVersions;
+	private Button fAddBundledVersions;
+	private Button fAddMissingVersions;
 	private Button fRemoveUnresolved;
 	private Button fCalculateUses;
 	private Button fAddMissing;
@@ -164,6 +167,20 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		gd = new GridData();
 		gd.verticalIndent = 5;
 		fCalculateUses.setLayoutData(gd);
+
+		fAddMissingVersions = new Button(group, SWT.CHECK);
+		fAddMissingVersions.setText(PDEUIMessages.OrganizeManifestsWizardPage_addMissingVersions);
+		gd = new GridData();
+		gd.verticalIndent = 5;
+		fAddMissingVersions.setLayoutData(gd);
+
+		fAddFixedVersions = new Button(group, SWT.RADIO);
+		fAddFixedVersions.setText(PDEUIMessages.OrganizeManifestsWizardPage_addFixedVersions);
+
+
+		fAddBundledVersions = new Button(group, SWT.RADIO);
+		fAddBundledVersions.setText(PDEUIMessages.OrganizeManifestsWizardPage_addBundledVersions);
+
 	}
 
 	private void createRequireImportGroup(Composite container) {
@@ -226,6 +243,7 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		fMarkInternal.setSelection(selection);
 		fProcessor.setMarkInternal(selection);
 
+
 		String filter = settings.get(PROP_INTERAL_PACKAGE_FILTER);
 		if (filter == null) {
 			filter = VALUE_DEFAULT_FILTER;
@@ -236,6 +254,15 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		selection = !settings.getBoolean(PROP_REMOVE_UNRESOLVED_EX);
 		fRemoveUnresolved.setSelection(selection);
 		fProcessor.setRemoveUnresolved(selection);
+
+		selection = !settings.getBoolean(PROP_ADD_MISSING_VERSIONS);
+		fAddMissingVersions.setSelection(selection);
+		fProcessor.setAddMissingVersions(selection);
+
+		selection = settings.getBoolean(PROP_MISSING_VERSION_OPTIONS);
+		fAddBundledVersions.setSelection(!selection);
+		fAddFixedVersions.setSelection(selection);
+		fProcessor.setMissingVersionsOptions(!selection);
 
 		selection = settings.getBoolean(PROP_CALCULATE_USES);
 		fCalculateUses.setSelection(selection);
@@ -290,6 +317,7 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		settings.put(PROP_INTERAL_PACKAGE_FILTER, fPackageFilter.getText());
 		settings.put(PROP_REMOVE_UNRESOLVED_EX, !fRemoveUnresolved.getSelection());
 		settings.put(PROP_CALCULATE_USES, fCalculateUses.getSelection());
+		settings.put(PROP_ADD_MISSING_VERSIONS, fAddMissingVersions.getSelection());
 
 		settings.put(PROP_MODIFY_DEP, !fModifyDependencies.getSelection());
 		settings.put(PROP_RESOLVE_IMP_MARK_OPT, fOptionalImport.getSelection());
@@ -313,10 +341,12 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		boolean modifyDependencies = fModifyDependencies.getSelection();
 		fRemoveImport.setEnabled(modifyDependencies);
 		fOptionalImport.setEnabled(modifyDependencies);
+
 	}
 
 	private void setButtonArrays() {
-		fTopLevelButtons = new Button[] { fRemoveUnresolved, fAddMissing, fModifyDependencies, fMarkInternal,
+		fTopLevelButtons = new Button[] { fRemoveUnresolved, fAddMissing, fAddMissingVersions, fModifyDependencies,
+				fMarkInternal,
 				fUnusedDependencies, fAdditonalDependencies, fComputeImportPackages, fFixIconNLSPaths,
 				fRemovedUnusedKeys, fRemoveLazy, fRemoveUselessFiles, fCalculateUses };
 	}
@@ -344,6 +374,8 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		hookSelectionListener(new Button[] { fRemoveImport, fOptionalImport },
 				widgetSelectedAdapter(e -> doProcessorSetting(e.getSource())));
 		hookTextListener(new Text[] {fPackageFilter}, e -> doProcessorSetting(e.getSource()));
+
+
 	}
 
 	private void doProcessorSetting(Object source) {
@@ -380,7 +412,10 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 			fProcessor.setPrefixIconNL(fFixIconNLSPaths.getSelection());
 		} else if (fRemovedUnusedKeys.equals(source)) {
 			fProcessor.setUnusedKeys(fRemovedUnusedKeys.getSelection());
+		} else if (fAddMissingVersions.equals(source)) {
+			fProcessor.setAddMissingVersions(fAddMissingVersions.getSelection());
 		}
+
 	}
 
 	private void hookSelectionListener(Button[] buttons, SelectionListener adapter) {
