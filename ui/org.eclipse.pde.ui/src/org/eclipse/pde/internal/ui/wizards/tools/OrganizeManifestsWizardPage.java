@@ -170,7 +170,10 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 
 		fAddMissingVersions = new Button(group, SWT.CHECK);
 		fAddMissingVersions.setText(PDEUIMessages.OrganizeManifestsWizardPage_addMissingVersions);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 80e6b44e1c (Author: Yvonna M. yvonna820@gmail.com Date: Mon Aug 11 2025 Issue 1815 Configured buttons in Organize Manifests Wizard to work to add versions to missing package exports     Fixed radio buttons so it defaults to a fixed version and when the checkbox is unclicked, other options become unavailable.   Co-authored-by: Hillary V. hi.villarta@gmail.com)
 		gd = new GridData();
 		gd.verticalIndent = 5;
 		fAddMissingVersions.setLayoutData(gd);
@@ -255,7 +258,7 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		fRemoveUnresolved.setSelection(selection);
 		fProcessor.setRemoveUnresolved(selection);
 
-		selection = !settings.getBoolean(PROP_ADD_MISSING_VERSIONS);
+		selection = settings.getBoolean(PROP_ADD_MISSING_VERSIONS);
 		fAddMissingVersions.setSelection(selection);
 		fProcessor.setAddMissingVersions(selection);
 
@@ -379,8 +382,8 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		hookSelectionListener(new Button[] { fRemoveImport, fOptionalImport },
 				widgetSelectedAdapter(e -> doProcessorSetting(e.getSource())));
 		hookTextListener(new Text[] {fPackageFilter}, e -> doProcessorSetting(e.getSource()));
-
-
+		hookSelectionListener(new Button[] { fAddFixedVersions, fAddBundledVersions },
+				widgetSelectedAdapter(e -> doProcessorSetting(e.getSource())));
 	}
 
 	private void doProcessorSetting(Object source) {
@@ -419,7 +422,16 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 			fProcessor.setUnusedKeys(fRemovedUnusedKeys.getSelection());
 		} else if (fAddMissingVersions.equals(source)) {
 			fProcessor.setAddMissingVersions(fAddMissingVersions.getSelection());
+<<<<<<< HEAD
 		}
+=======
+		} else if (fAddFixedVersions.equals(source)) {
+			fProcessor.setMissingVersionOptions(fAddFixedVersions.getSelection());
+		} else if (fAddBundledVersions.equals(source)) {
+			fProcessor.setMissingVersionOptions(fAddBundledVersions.getSelection());
+		}
+
+>>>>>>> 80e6b44e1c (Author: Yvonna M. yvonna820@gmail.com Date: Mon Aug 11 2025 Issue 1815 Configured buttons in Organize Manifests Wizard to work to add versions to missing package exports     Fixed radio buttons so it defaults to a fixed version and when the checkbox is unclicked, other options become unavailable.   Co-authored-by: Hillary V. hi.villarta@gmail.com)
 	}
 
 	private void hookSelectionListener(Button[] buttons, SelectionListener adapter) {
