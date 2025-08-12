@@ -170,13 +170,13 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 
 		fAddMissingVersions = new Button(group, SWT.CHECK);
 		fAddMissingVersions.setText(PDEUIMessages.OrganizeManifestsWizardPage_addMissingVersions);
+
 		gd = new GridData();
 		gd.verticalIndent = 5;
 		fAddMissingVersions.setLayoutData(gd);
 
 		fAddFixedVersions = new Button(group, SWT.RADIO);
 		fAddFixedVersions.setText(PDEUIMessages.OrganizeManifestsWizardPage_addFixedVersions);
-
 
 		fAddBundledVersions = new Button(group, SWT.RADIO);
 		fAddBundledVersions.setText(PDEUIMessages.OrganizeManifestsWizardPage_addBundledVersions);
@@ -260,9 +260,9 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		fProcessor.setAddMissingVersions(selection);
 
 		selection = settings.getBoolean(PROP_MISSING_VERSION_OPTIONS);
-		fAddBundledVersions.setSelection(!selection);
-		fAddFixedVersions.setSelection(selection);
-		fProcessor.setMissingVersionsOptions(!selection);
+		fAddBundledVersions.setSelection(selection);
+		fAddFixedVersions.setSelection(!selection);
+		fProcessor.setMissingVersionOptions(selection);
 
 		selection = settings.getBoolean(PROP_CALCULATE_USES);
 		fCalculateUses.setSelection(selection);
@@ -317,7 +317,8 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		settings.put(PROP_INTERAL_PACKAGE_FILTER, fPackageFilter.getText());
 		settings.put(PROP_REMOVE_UNRESOLVED_EX, !fRemoveUnresolved.getSelection());
 		settings.put(PROP_CALCULATE_USES, fCalculateUses.getSelection());
-		settings.put(PROP_ADD_MISSING_VERSIONS, fAddMissingVersions.getSelection());
+
+		settings.put(PROP_ADD_MISSING_VERSIONS, !fAddMissingVersions.getSelection());
 
 		settings.put(PROP_MODIFY_DEP, !fModifyDependencies.getSelection());
 		settings.put(PROP_RESOLVE_IMP_MARK_OPT, fOptionalImport.getSelection());
@@ -342,6 +343,9 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		fRemoveImport.setEnabled(modifyDependencies);
 		fOptionalImport.setEnabled(modifyDependencies);
 
+		boolean addMissingVersions = fAddMissingVersions.getSelection();
+		fAddBundledVersions.setEnabled(addMissingVersions);
+		fAddFixedVersions.setEnabled(addMissingVersions);
 	}
 
 	private void setButtonArrays() {
@@ -363,7 +367,8 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 	}
 
 	private void hookListeners() {
-		hookSelectionListener(new Button[] { fMarkInternal, fModifyDependencies }, widgetSelectedAdapter(e -> {
+		hookSelectionListener(new Button[] { fMarkInternal, fModifyDependencies, fAddMissingVersions },
+				widgetSelectedAdapter(e -> {
 			setEnabledStates();
 			doProcessorSetting(e.getSource());
 		}));
@@ -415,7 +420,6 @@ public class OrganizeManifestsWizardPage extends UserInputWizardPage implements 
 		} else if (fAddMissingVersions.equals(source)) {
 			fProcessor.setAddMissingVersions(fAddMissingVersions.getSelection());
 		}
-
 	}
 
 	private void hookSelectionListener(Button[] buttons, SelectionListener adapter) {
