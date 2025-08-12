@@ -365,7 +365,4 @@ public class OrganizeManifestsProcessor extends RefactoringProcessor implements 
 	public void setMissingVersionOptions(boolean missingVersionOptions) {
 		this.fMissingVersionOptions = missingVersionOptions;
 	}
-
-
-
 }
