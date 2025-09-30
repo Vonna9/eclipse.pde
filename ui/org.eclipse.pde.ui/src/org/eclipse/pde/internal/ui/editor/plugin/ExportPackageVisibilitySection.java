@@ -24,12 +24,10 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.pde.core.IBaseModel;
 import org.eclipse.pde.core.IModelChangedEvent;
@@ -65,7 +63,7 @@ public class ExportPackageVisibilitySection extends TableSection implements IPar
 	private static int ADD_INDEX = 0;
 	private static int REMOVE_INDEX = 1;
 
-	private TableViewer fFriendViewer;
+	private TreeViewer fFriendViewer;
 	private Action fAddAction;
 	private Action fRemoveAction;
 	private Button fInternalButton;
@@ -74,9 +72,9 @@ public class ExportPackageVisibilitySection extends TableSection implements IPar
 	private Image fImage;
 	private Button fVisibleButton;
 
-	static class TableContentProvider implements IStructuredContentProvider {
+	static class TreeContentProvider implements ITreeContentProvider {
 		@Override
-		public Object[] getElements(Object parent) {
+		public Object[] getChildren(Object parent) {
 			ExportPackageObject object = (ExportPackageObject) parent;
 			if (object == null || !object.isInternal()) {
 				return new Object[0];
@@ -85,7 +83,7 @@ public class ExportPackageVisibilitySection extends TableSection implements IPar
 		}
 	}
 
-	class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+	class TreeLabelProvider implements ITreeContentProvider {
 
 		@Override
 		public String getColumnText(Object obj, int index) {
@@ -140,6 +138,11 @@ public class ExportPackageVisibilitySection extends TableSection implements IPar
 		fFriendViewer.setContentProvider(new TableContentProvider());
 		fFriendViewer.setLabelProvider(new TableLabelProvider());
 		toolkit.paintBordersFor(container);
+
+		treeViewer = new TreeViewer(parent);
+		treeViewer.setContentProvider(new TreeContentProvider());
+		treeViewer.setLabelProvider(new TreeContentLabelProvider());
+		treeViewer.expandAll();
 
 		makeActions();
 		fImage = PDEPluginImages.DESC_PLUGIN_OBJ.createImage();
